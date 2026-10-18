@@ -27,14 +27,21 @@ jobs:
             echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           fi
 
-      - name: Login to Aliyun ACR
+      - name: Login to Aliyun ACR (hangzhou)
         uses: docker/login-action@v3
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSWORD }}
 
-      - name: Build and push structure-oauth-server-boot Docker image of huangzhou
+      - name: Login to Aliyun ACR (beijing)
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-beijing.aliyuncs.com
+          username: ${{ secrets.ALIYUN_ACR_USERNAME }}
+          password: ${{ secrets.ALIYUN_ACR_PASSWORD }}
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./
@@ -44,4 +51,6 @@ jobs:
           tags: |
             registry.cn-hangzhou.aliyuncs.com/yunjida/structure-sso:${{ env.RELEASE_VERSION }}
             registry.cn-hangzhou.aliyuncs.com/yunjida/structure-sso:latest
+            registry.cn-beijing.aliyuncs.com/yunjida/structure-sso:${{ env.RELEASE_VERSION }}
+            registry.cn-beijing.aliyuncs.com/yunjida/structure-sso:latest
 
